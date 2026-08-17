@@ -166,7 +166,7 @@
     .bar-fill {
       height: 100%;
       width: 0%;
-      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      background: linear-gradient(90deg, #52c96b, var(--accent2), var(--accent));
       border-radius: 999px;
       transition: width .18s ease;
     }
@@ -713,7 +713,7 @@
     </section>
 
     <section class="entry-area">
-      <input id="amountInput" class="entry-input" type="number" min="0" step="0.01" placeholder="Amount $" />
+      <input id="amountInput" class="entry-input" type="number" min="0" max="999999999.99" step="0.01" placeholder="Amount $" />
       <div class="desc-date-row">
         <input id="descInput" class="entry-input" type="text" maxlength="42" placeholder="Description" />
         <button id="dateBtn" class="date-btn">Date</button>
@@ -965,6 +965,9 @@
     let pickerDay = 0;
     let helpSlide = 0;
 
+    const MONEY_LIMIT = 999999999.99;
+    const MONEY_LIMIT_CENTS = 99999999999;
+
     const now = new Date();
     const baseFYStart = now.getMonth() + 1 >= 7 ? now.getFullYear() : now.getFullYear() - 1;
     let currentFYStart = Number(localStorage.getItem("taxTracker.currentFY")) || baseFYStart;
@@ -1014,8 +1017,20 @@
       return `${n < 0 ? "-$" : "$"}${formatted}`;
     }
 
+    function moneySmart(value) {
+      const n = roundCurrency(value);
+      const hasCents = Math.abs(Math.round(n * 100)) % 100 !== 0;
+      return money(n, hasCents);
+    }
+
     function roundCurrency(value) {
       return Math.round((Number(value) || 0) * 100) / 100;
+    }
+
+    function clampMoney(value) {
+      const cents = Math.round((Number(value) || 0) * 100);
+      const limitedCents = Math.max(-MONEY_LIMIT_CENTS, Math.min(MONEY_LIMIT_CENTS, cents));
+      return limitedCents / 100;
     }
 
     function taxableWholeDollars(income) {
@@ -1048,11 +1063,15 @@
       return `${rateText(bracket.rate)} owing for each $1`;
     }
 
-    function totalOf(list) {
-      const cents = list.reduce((sum, e) => {
-        return sum + Math.round((Number(e.amount) || 0) * 100);
+    function totalCents(list) {
+      return list.reduce((sum, e) => {
+        const entryCents = Math.round(Math.abs(clampMoney(e.amount)) * 100);
+        return sum + entryCents;
       }, 0);
-      return cents / 100;
+    }
+
+    function totalOf(list) {
+      return totalCents(list) / 100;
     }
 
     function saveCurrentFY() {
@@ -1063,8 +1082,22 @@
 
     function loadCurrentFY() {
       try {
-        incomes = JSON.parse(localStorage.getItem(key("i")) || "[]");
-        deductions = JSON.parse(localStorage.getItem(key("d")) || "[]");
+        const savedIncomes = JSON.parse(localStorage.getItem(key("i")) || "[]");
+        const savedDeductions = JSON.parse(localStorage.getItem(key("d")) || "[]");
+
+        incomes = Array.isArray(savedIncomes)
+          ? savedIncomes.map(entry => ({
+              ...entry,
+              amount: Math.abs(clampMoney(entry && entry.amount))
+            }))
+          : [];
+
+        deductions = Array.isArray(savedDeductions)
+          ? savedDeductions.map(entry => ({
+              ...entry,
+              amount: Math.abs(clampMoney(entry && entry.amount))
+            }))
+          : [];
       } catch {
         incomes = [];
         deductions = [];
@@ -1072,8 +1105,12 @@
     }
 
     function addEntry(isIncome) {
-      const amount = Number(document.getElementById("amountInput").value);
-      if (!amount || amount <= 0) return;
+      const amountInput = document.getElementById("amountInput");
+      const rawAmount = Number(amountInput.value);
+      if (!rawAmount || rawAmount <= 0) return;
+
+      const amount = Math.abs(clampMoney(rawAmount));
+      amountInput.value = amount.toFixed(2);
 
       const entry = {
         amount,
@@ -1118,7 +1155,7 @@
         const card = document.createElement("div");
         card.className = "card";
         card.innerHTML = `
-          <div class="amount">${deduction ? "-" : ""}${money(entry.amount, false)}</div>
+          <div class="amount">${deduction ? "-" : ""}${moneySmart(entry.amount)}</div>
           <div class="desc">${entry.desc || "-"}</div>
         `;
         el.appendChild(card);
@@ -1162,7 +1199,7 @@
         const row = document.createElement("div");
         row.className = "log-row";
         row.innerHTML = `
-          <div>${isDeduction ? "-" : ""}${money(entry.amount, false)}</div>
+          <div>${isDeduction ? "-" : ""}${moneySmart(entry.amount)}</div>
           <div class="log-desc">${entry.desc || "-"}</div>
           <button class="delete-btn" title="Delete">x</button>
         `;
@@ -1179,13 +1216,17 @@
     }
 
     function updateUI() {
-      const gross = totalOf(incomes);
-      const ded = totalOf(deductions);
-      const net = roundCurrency(gross - ded);
+      const grossCents = totalCents(incomes);
+      const dedCents = totalCents(deductions);
+      const rawNetCents = grossCents - dedCents;
+      const netCents = Math.max(-MONEY_LIMIT_CENTS, Math.min(MONEY_LIMIT_CENTS, rawNetCents));
+      const gross = grossCents / 100;
+      const ded = dedCents / 100;
+      const net = netCents / 100;
       const tax = calcProgressiveTax(net);
 
       document.getElementById("fyLabel").textContent = `Financial Year: ${fyText()}`;
-      document.getElementById("incomeDisplay").textContent = money(net, false);
+      document.getElementById("incomeDisplay").textContent = moneySmart(net);
       document.getElementById("taxEstimate").textContent = net > BASE ? `${money(tax, true)} tax owed estimate` : "";
       document.getElementById("rateLabel").textContent = marginalRateLabel(net);
 
@@ -1290,6 +1331,31 @@
       deductionLogPage = 0;
       loadCurrentFY();
       updateUI();
+    });
+
+    const amountInput = document.getElementById("amountInput");
+
+    function enforceAmountLimit() {
+      if (amountInput.value === "") return;
+      const rawAmount = Number(amountInput.value);
+
+      if (!Number.isFinite(rawAmount) || rawAmount < 0) {
+        amountInput.value = "";
+        return;
+      }
+
+      if (rawAmount > MONEY_LIMIT) {
+        amountInput.value = MONEY_LIMIT.toFixed(2);
+      }
+    }
+
+    amountInput.addEventListener("input", enforceAmountLimit);
+    amountInput.addEventListener("change", enforceAmountLimit);
+    amountInput.addEventListener("blur", () => {
+      enforceAmountLimit();
+      if (amountInput.value === "") return;
+      const amount = Math.abs(clampMoney(Number(amountInput.value)));
+      amountInput.value = String(amount);
     });
 
     document.getElementById("addIncome").addEventListener("click", () => addEntry(true));
