@@ -430,6 +430,172 @@
       color: var(--text);
     }
 
+    .tax-help-bigtime-title {
+      margin-bottom: 8px;
+      color: var(--text);
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: .02em;
+    }
+
+    .tax-help-intro {
+      margin-bottom: 18px;
+      color: var(--text);
+      font-size: 15px;
+      font-weight: 700;
+      line-height: 1.45;
+    }
+
+    .tax-help-title {
+      margin-bottom: 16px;
+      color: var(--text);
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: .02em;
+    }
+
+    .tax-bracket-grid {
+      display: grid;
+      grid-template-columns: minmax(150px, 1.1fr) 20px minmax(130px, 1fr);
+      row-gap: 10px;
+      align-items: baseline;
+      width: 100%;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .tax-bracket-head {
+      color: var(--accent2);
+      font-size: 14px;
+      font-weight: 800;
+      line-height: 1.2;
+      margin-bottom: 2px;
+    }
+
+    .tax-bracket-head-left,
+    .tax-bracket-range {
+      text-align: left;
+    }
+
+    .tax-bracket-head-right,
+    .tax-bracket-rate {
+      text-align: left;
+    }
+
+    .tax-bracket-range,
+    .tax-bracket-rate {
+      white-space: nowrap;
+    }
+
+    .tax-bracket-dash {
+      color: var(--muted);
+      text-align: center;
+    }
+
+    .tax-bracket-example {
+      margin-top: 22px;
+      color: var(--text);
+      font-size: 13px;
+      line-height: 1.5;
+      text-align: left;
+    }
+
+    .tax-bracket-example strong {
+      color: var(--text);
+    }
+
+    .tax-example-heading {
+      margin: 0 0 14px;
+      color: var(--text);
+      font-weight: 700;
+    }
+
+    .tax-example-list {
+      margin: 0;
+      padding-left: 20px;
+      display: grid;
+      gap: 14px;
+    }
+
+    .tax-example-list li {
+      margin: 0;
+      padding-left: 4px;
+      color: var(--text);
+      text-align: left;
+    }
+
+    .tax-example-detail {
+      display: inline-grid;
+      gap: 14px;
+      width: calc(100% - 8px);
+      text-align: left;
+      vertical-align: top;
+    }
+
+    .tax-example-detail p {
+      margin: 0;
+      padding: 0;
+      text-align: left;
+    }
+
+    .tax-example-breakdown {
+      display: grid;
+      gap: 6px;
+      margin: 0;
+      width: 100%;
+    }
+
+    .tax-example-breakdown-row {
+      display: grid;
+      grid-template-columns: 190px 1fr;
+      gap: 10px;
+      align-items: baseline;
+      width: 100%;
+    }
+
+    .tax-example-breakdown-row span,
+    .tax-example-breakdown-row strong {
+      display: block;
+      margin: 0;
+      text-align: left;
+    }
+
+    .tax-example-list li::marker {
+      color: #ffffff;
+      font-size: 1.05em;
+    }
+
+    .tax-bracket-note {
+      margin-top: 18px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
+    @media (max-width: 420px) {
+      .tax-bracket-grid {
+        grid-template-columns: minmax(132px, 1.15fr) 16px minmax(112px, 1fr);
+        column-gap: 3px;
+        font-size: 13px;
+      }
+
+      .tax-bracket-head {
+        font-size: 12px;
+      }
+
+      .tax-help-intro {
+        font-size: 14px;
+      }
+
+      .tax-example-detail {
+        width: calc(100% - 6px);
+      }
+
+      .tax-example-breakdown-row {
+        grid-template-columns: 1fr;
+        gap: 1px;
+      }
+    }
+
     @media (min-width: 681px) {
       .top-row {
         gap: 16px;
@@ -654,11 +820,140 @@
     const MAX_ENTRIES = 365;
     const LOG_PAGE_SIZE = 50;
 
-    const slides = [
-      "LISTEN UP.\n\nThere are only two things you need to understand.",
-      "INCOME\n\nIncome is money in.\n\nYou sold a $5 sandwich today.\nSomeone paid you $5 into your bank today.\n\nThat is INCOME.",
-      "DEDUCTION\n\nA deduction is money you spent on your business.\n\nExample: $3 bread, $2 peanut butter, and an $8 knife to spread it.\n\nBOOM. Those are DEDUCTIONS.\n\nNow go. Get to it."
-    ];
+    function taxRulesForYear(startYear) {
+      if (startYear <= 2023) {
+        return {
+          brackets: [
+            { from: 0, to: 18200, rate: 0 },
+            { from: 18200, to: 45000, rate: 0.19 },
+            { from: 45000, to: 120000, rate: 0.325 },
+            { from: 120000, to: 180000, rate: 0.37 },
+            { from: 180000, to: Infinity, rate: 0.45 }
+          ]
+        };
+      }
+
+      if (startYear <= 2025) {
+        return {
+          brackets: [
+            { from: 0, to: 18200, rate: 0 },
+            { from: 18200, to: 45000, rate: 0.16 },
+            { from: 45000, to: 135000, rate: 0.30 },
+            { from: 135000, to: 190000, rate: 0.37 },
+            { from: 190000, to: Infinity, rate: 0.45 }
+          ]
+        };
+      }
+
+      if (startYear === 2026) {
+        return {
+          brackets: [
+            { from: 0, to: 18200, rate: 0 },
+            { from: 18200, to: 45000, rate: 0.15 },
+            { from: 45000, to: 135000, rate: 0.30 },
+            { from: 135000, to: 190000, rate: 0.37 },
+            { from: 190000, to: Infinity, rate: 0.45 }
+          ]
+        };
+      }
+
+      return {
+        brackets: [
+          { from: 0, to: 18200, rate: 0 },
+          { from: 18200, to: 45000, rate: 0.14 },
+          { from: 45000, to: 135000, rate: 0.30 },
+          { from: 135000, to: 190000, rate: 0.37 },
+          { from: 190000, to: Infinity, rate: 0.45 }
+        ]
+      };
+    }
+
+    function rateText(rate) {
+      const cents = rate * 100;
+      return Number.isInteger(cents) ? `${cents}c` : `${cents.toFixed(1)}c`;
+    }
+
+    function taxBracketHelpHTML() {
+      const rules = taxRulesForYear(currentFYStart);
+      const headerRow = `<div class="tax-bracket-head tax-bracket-head-left">Your yearly make</div><div></div><div class="tax-bracket-head tax-bracket-head-right">Governments take</div>`;
+      const rows = rules.brackets.map((bracket, index) => {
+        let range = "";
+        let rate = "";
+
+        if (index === 0) {
+          range = "$0 - $18,200";
+          rate = "Tax free";
+        } else {
+          const lower = (bracket.from + 1).toLocaleString("en-AU");
+          range = Number.isFinite(bracket.to)
+            ? `$${lower} - $${bracket.to.toLocaleString("en-AU")}`
+            : `$${lower}+`;
+          rate = `${rateText(bracket.rate)} per $1`;
+        }
+
+        return `<div class="tax-bracket-range">${range}</div><div class="tax-bracket-dash">—</div><div class="tax-bracket-rate">${rate}</div>`;
+      }).join("");
+
+      const exampleIncome = 138000;
+      const exampleTax = calcProgressiveTax(exampleIncome);
+      const exampleBracket = rules.brackets.find(item => exampleIncome > item.from && exampleIncome <= item.to) || rules.brackets[rules.brackets.length - 1];
+      const exampleRate = rateText(exampleBracket.rate);
+
+      return `
+        <div class="tax-help-bigtime-title">PAY ATTENTION MR BIG TIME</div>
+        <div class="tax-help-intro">Read this bro, really read it. Unless you're one of the smart ones and don't need it because you're bigger than the Government, move on. But if you're not, and you actually want to understand how this works, read below. Then read it again. Then read it again.</div>
+        <div class="tax-help-title">AUSTRALIAN TAX BRACKETS</div>
+        <div class="tax-bracket-grid">${headerRow}${rows}</div>
+
+        <div class="tax-bracket-example">
+          <div class="tax-example-heading">Now really understand what those cents mean.</div>
+          <ul class="tax-example-list">
+            <li>Lets say you made <strong>$138,000</strong> for the entire year. Look at the table above — where does it put you?</li>
+            <li>Exactly. that puts you in the <strong>37%</strong> part, right? Look at the table above again.</li>
+            <li>For this simple example, forget the full tax calculation for a second. Pretend every $1 of <strong>$138,000</strong> has <strong>37c owing</strong> on it.</li>
+            <li><strong>$138,000 × 37% = $51,060.</strong></li>
+            <li>Which means you owe the Government <strong>$51,060</strong> at the end of this year, right?</li>
+            <li>So imagine you made $138,000 this year. Instead of taking that $51,060, putting it somewhere safe and leaving it there for the Government, you spent the entire $138,000 at the casino trying to double it — and lost the lot.</li>
+            <li>Your wallet now says <strong>$0</strong>. But in this simple example, you still have <strong>$51,060</strong> that was meant for the Government. How are you going to pay it when the money is already gone?</li>
+            <li>And don't forget: if you start making money again while you dropped back down to <strong>$0</strong>, you are in that <strong>37c</strong> bracket, each new $1 has another <strong>37c</strong> owing on it as well. People forget that part when they gamble it. Picture it, really picture it, you spent the entire <strong>$138,000</strong> and went <strong>ALL</strong> the way down to <strong>$0</strong>, you owe the Government <strong>$51,060</strong>, you have <strong>$0</strong>, you go and make more new money the next day and guess what, you owe <strong>37c</strong> for every $1. Even though you're back at <strong>$0</strong>, you make <strong>$1,000</strong> the next day, guess what, you owe <strong>$370</strong> on that <strong>$1,000</strong>. Are you cracking the code yet?</li>
+            <li class="tax-example-detail-item">
+              <div class="tax-example-detail">
+                <p>You were supposed to separate <strong>$51,060</strong> from the <strong>$138,000</strong> you made.</p>
+
+                <div class="tax-example-breakdown">
+                  <div class="tax-example-breakdown-row"><span><strong>So you make:</strong></span><strong>$138,000</strong></div>
+                  <div class="tax-example-breakdown-row"><span><strong>Your take:</strong></span><strong>$86,940</strong></div>
+                  <div class="tax-example-breakdown-row"><span><strong>The Government’s take:</strong></span><strong>$51,060</strong></div>
+                </div>
+
+                <p>You were physically supposed to separate that <strong>$51,060</strong> from the <strong>$138,000</strong>, leaving you with <strong>$86,940</strong> to treat as your money. That <strong>$51,060</strong> needed to stay put so you could pay the tax bill to the ATO when it was due at the end of the year.</p>
+
+                <p>But you went and spent the entire <strong>$138,000</strong> at the casino trying to double it — and lost the lot.</p>
+
+                <p>Your wallet is now <strong>$0</strong>.</p>
+
+                <p><strong>How do you pay the $51,060 back, bro?</strong></p>
+
+                <p><strong>$138,000 → blew it all → $0 → still have a tax problem.</strong></p>
+
+                <p>Someone who has just started making money, feels like they're killing it, and hasn't yet internalised that revenue sitting in their account isn't necessarily all theirs to spend.</p>
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        <div class="tax-bracket-note">$18,200 is the tax-free threshold. That is why the tracker says the goal is to bring taxable income back toward $18,200. IMPORTANT: Companies do not get the $18,200 tax-free threshold. Sole traders get that benefit because, in the real game, you’re taxed as an individual. Companies DO NOT get that benefit in the real world — companies are taxed under a different structure and can make more sense as a business grows. Income tax estimate only; Medicare levy, tax offsets and other adjustments are not included.</div>
+      `;
+    }
+
+    function helpSlides() {
+      return [
+        { type: "text", content: "INCOME\n\nIncome is money in.\n\nYou sold a $5 sandwich today.\nSomeone paid you $5 into your bank today.\n\nThat is INCOME." },
+        { type: "text", content: "DEDUCTION\n\nA deduction is money you spent on your business.\n\nExample: $3 bread, $2 peanut butter, and an $8 knife to spread it.\n\nThose are DEDUCTIONS." },
+        { type: "brackets", content: taxBracketHelpHTML() },
+        { type: "text", content: "WHY $18,200?\n\n$18,200 is the tax-free threshold for an Australian resident.\n\nThat is why the tracker says the goal is to bring taxable income back toward $18,200: deductions reduce taxable income, and income at or below the threshold has no basic income tax in this tracker." }
+      ];
+    }
 
     let incomes = [];
     let deductions = [];
@@ -721,21 +1016,25 @@
 
     function calcProgressiveTax(income) {
       const x = Math.max(Number(income) || 0, 0);
+      const rules = taxRulesForYear(currentFYStart);
       let tax = 0;
-      if (x > BASE) tax += (Math.min(x, 45000) - BASE) * 0.19;
-      if (x > 45000) tax += (Math.min(x, 120000) - 45000) * 0.325;
-      if (x > 120000) tax += (Math.min(x, 180000) - 120000) * 0.37;
-      if (x > 180000) tax += (x - 180000) * 0.47;
+
+      for (const bracket of rules.brackets) {
+        if (bracket.rate === 0 || x <= bracket.from) continue;
+        const upper = Number.isFinite(bracket.to) ? Math.min(x, bracket.to) : x;
+        tax += Math.max(0, upper - bracket.from) * bracket.rate;
+      }
+
       return tax;
     }
 
     function marginalRateLabel(income) {
       const x = Math.max(Number(income) || 0, 0);
       if (x <= BASE) return "";
-      if (x <= 45000) return "19c owing for each $1";
-      if (x <= 120000) return "32.5c owing for each $1";
-      if (x <= 180000) return "37c owing for each $1";
-      return "47c owing for each $1";
+
+      const rules = taxRulesForYear(currentFYStart);
+      const bracket = rules.brackets.find(item => x > item.from && x <= item.to) || rules.brackets[rules.brackets.length - 1];
+      return `${rateText(bracket.rate)} owing for each $1`;
     }
 
     function totalOf(list) {
@@ -944,7 +1243,16 @@
     }
 
     function renderHelp() {
-      document.getElementById("helpText").textContent = slides[helpSlide];
+      const slides = helpSlides();
+      const slide = slides[helpSlide];
+      const helpText = document.getElementById("helpText");
+
+      if (slide.type === "brackets") {
+        helpText.innerHTML = slide.content;
+      } else {
+        helpText.textContent = slide.content;
+      }
+
       document.getElementById("helpContinue").textContent = helpSlide === slides.length - 1 ? "Done" : "Continue";
     }
 
@@ -1025,6 +1333,7 @@
 
     document.getElementById("helpBtn").addEventListener("click", openHelp);
     document.getElementById("helpContinue").addEventListener("click", () => {
+      const slides = helpSlides();
       helpSlide++;
       if (helpSlide >= slides.length) {
         localStorage.setItem("taxTracker.seen", "true");
