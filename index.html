@@ -1014,8 +1014,19 @@
       return `${n < 0 ? "-$" : "$"}${formatted}`;
     }
 
+    function roundCurrency(value) {
+      return Math.round((Number(value) || 0) * 100) / 100;
+    }
+
+    function taxableWholeDollars(income) {
+      // The tax-bracket UI is expressed in whole-dollar ranges (for example
+      // $18,201-$45,000), so ignore cents when deciding which bracket applies.
+      // This prevents $18,200.50 from displaying as though it were $18,201.
+      return Math.max(Math.floor(roundCurrency(income)), 0);
+    }
+
     function calcProgressiveTax(income) {
-      const x = Math.max(Number(income) || 0, 0);
+      const x = taxableWholeDollars(income);
       const rules = taxRulesForYear(currentFYStart);
       let tax = 0;
 
@@ -1025,20 +1036,23 @@
         tax += Math.max(0, upper - bracket.from) * bracket.rate;
       }
 
-      return tax;
+      return roundCurrency(tax);
     }
 
     function marginalRateLabel(income) {
-      const x = Math.max(Number(income) || 0, 0);
+      const x = taxableWholeDollars(income);
       if (x <= BASE) return "";
 
       const rules = taxRulesForYear(currentFYStart);
-      const bracket = rules.brackets.find(item => x > item.from && x <= item.to) || rules.brackets[rules.brackets.length - 1];
+      const bracket = rules.brackets.find(item => x <= item.to) || rules.brackets[rules.brackets.length - 1];
       return `${rateText(bracket.rate)} owing for each $1`;
     }
 
     function totalOf(list) {
-      return list.reduce((sum, e) => sum + (Number(e.amount) || 0), 0);
+      const cents = list.reduce((sum, e) => {
+        return sum + Math.round((Number(e.amount) || 0) * 100);
+      }, 0);
+      return cents / 100;
     }
 
     function saveCurrentFY() {
@@ -1167,7 +1181,7 @@
     function updateUI() {
       const gross = totalOf(incomes);
       const ded = totalOf(deductions);
-      const net = gross - ded;
+      const net = roundCurrency(gross - ded);
       const tax = calcProgressiveTax(net);
 
       document.getElementById("fyLabel").textContent = `Financial Year: ${fyText()}`;
