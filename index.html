@@ -1611,7 +1611,7 @@
         weeklyAdSlides[weeklyAdIndex].classList.remove("active");
         weeklyAdIndex = (weeklyAdIndex + 1) % weeklyAdSlides.length;
         weeklyAdSlides[weeklyAdIndex].classList.add("active");
-      }, 5000);
+      }, 60000);
     }
 
     if (localStorage.getItem("taxTracker.seen") !== "true") {
