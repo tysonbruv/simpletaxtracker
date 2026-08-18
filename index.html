@@ -302,15 +302,35 @@
       position: relative;
     }
 
-    .weekly-ad-timer {
-      display: none;
-      margin-top: 6px;
-      color: var(--muted);
-      font-size: 12px;
-      font-weight: 700;
-      text-align: right;
-      letter-spacing: .02em;
-    }
+    .weekly-ad-footer {
+  margin-top: 7px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.weekly-ad-pricing {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.45;
+  text-align: left;
+}
+
+.weekly-ad-pricing strong {
+  color: var(--text);
+  font-weight: 800;
+}
+
+.weekly-ad-timer {
+  display: none;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+  text-align: right;
+  letter-spacing: .02em;
+  white-space: nowrap;
+}
 
     .weekly-ad-slide {
       position: absolute;
@@ -901,7 +921,16 @@
 
 </div>
 
-<div class="weekly-ad-timer" id="weeklyAdTimer">1:00</div>
+<div class="weekly-ad-footer">
+
+  <div class="weekly-ad-pricing">
+    <div><strong>Weekly Advertising — $20</strong></div>
+    <div>Maximum 5 advertisers per week.</div>
+  </div>
+
+  <div class="weekly-ad-timer" id="weeklyAdTimer">1:00</div>
+
+</div>
     </section>
   </main>
 
