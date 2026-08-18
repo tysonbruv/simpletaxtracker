@@ -1023,7 +1023,7 @@
         { type: "text", content: "INCOME\n\nIncome is money in.\n\nYou sold a $5 sandwich today.\nSomeone paid you $5 into your bank today.\n\nMoney into your bank, is \"income\"\n\nThat is INCOME." },
         { type: "text", content: "DEDUCTION\n\nA deduction is money you spent on your business in order to actually GET the income.\n\nExample: $3 bread loaf, $5 peanut butter, and a $50 cool butter knife to spread it.\n\nYou spent money in order for you to make money.\n\nThose are DEDUCTIONS." },
         { type: "brackets", content: taxBracketHelpHTML() },
-        { type: "text", content: "WHY $18,200?\n\n$18,200 is the tax-free threshold set by the Australian Government for Australian residents.\n\nThat is why the tracker says the goal is to bring taxable income back toward $18,200: <span class='help-accent-bold'>deductions reduce taxable income</span>, and income at or below the threshold has no basic income tax in this tracker." }
+        { type: "html", content: "WHY $18,200?\n\n$18,200 is the tax-free threshold set by the Australian Government for Australian residents.\n\nThat is why the tracker says the goal is to bring taxable income back toward $18,200: <span class='help-accent-bold'>deductions reduce taxable income</span>, and income at or below the threshold has no basic income tax in this tracker." }
       ];
     }
 
@@ -1374,7 +1374,7 @@
       const slide = slides[helpSlide];
       const helpText = document.getElementById("helpText");
 
-      if (slide.type === "brackets") {
+      if (slide.type === "brackets" || slide.type === "html") {
         helpText.innerHTML = slide.content;
       } else {
         helpText.textContent = slide.content;
