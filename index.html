@@ -1279,18 +1279,7 @@
       selectedMonth = 0;
       selectedDay = 0;
       renderDateButton();
-      const weeklyAdSlides = Array.from(document.querySelectorAll(".weekly-ad-slide"));
-    let weeklyAdIndex = 0;
-
-    if (weeklyAdSlides.length > 1) {
-      setInterval(() => {
-        weeklyAdSlides[weeklyAdIndex].classList.remove("active");
-        weeklyAdIndex = (weeklyAdIndex + 1) % weeklyAdSlides.length;
-        weeklyAdSlides[weeklyAdIndex].classList.add("active");
-      }, 5000);
-    }
-
-    updateUI();
+      updateUI();
     }
 
     function renderDateButton() {
@@ -1613,6 +1602,17 @@
     loadCurrentFY();
     renderDateButton();
     updateUI();
+
+    const weeklyAdSlides = Array.from(document.querySelectorAll(".weekly-ad-slide"));
+    let weeklyAdIndex = 0;
+
+    if (weeklyAdSlides.length > 1) {
+      setInterval(() => {
+        weeklyAdSlides[weeklyAdIndex].classList.remove("active");
+        weeklyAdIndex = (weeklyAdIndex + 1) % weeklyAdSlides.length;
+        weeklyAdSlides[weeklyAdIndex].classList.add("active");
+      }, 5000);
+    }
 
     if (localStorage.getItem("taxTracker.seen") !== "true") {
       openHelp();
