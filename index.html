@@ -430,12 +430,25 @@
       color: var(--text);
     }
 
-    .tax-help-bigtime-title {
+    .tax-help-top-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
       margin-bottom: 8px;
+    }
+
+    .tax-help-bigtime-title {
+      margin-bottom: 0;
       color: var(--text);
       font-size: 18px;
       font-weight: 800;
       letter-spacing: .02em;
+    }
+
+    .tax-help-top-continue {
+      flex: 0 0 auto;
+      white-space: nowrap;
     }
 
     .tax-help-intro {
@@ -537,6 +550,24 @@
       text-align: left;
     }
 
+    .tax-example-bordered {
+      border: 1px solid var(--accent2);
+      border-radius: 10px;
+      padding: 14px;
+      width: 100%;
+    }
+
+    .tax-example-red-box {
+      border: 1px solid var(--accent);
+      border-radius: 8px;
+      padding: 10px 12px;
+    }
+
+    .tax-example-red-text {
+      color: var(--accent);
+      font-weight: 800;
+    }
+
     .tax-example-breakdown {
       display: grid;
       gap: 6px;
@@ -557,6 +588,17 @@
       display: block;
       margin: 0;
       text-align: left;
+    }
+
+    .tax-example-breakdown-accent,
+    .tax-example-breakdown-accent span,
+    .tax-example-breakdown-accent strong {
+      color: var(--accent2);
+    }
+
+    .help-accent-bold {
+      color: var(--accent2);
+      font-weight: 800;
     }
 
     .tax-example-list li::marker {
@@ -584,6 +626,19 @@
 
       .tax-help-intro {
         font-size: 14px;
+      }
+
+      .tax-help-top-row {
+        gap: 8px;
+      }
+
+      .tax-help-bigtime-title {
+        font-size: 16px;
+      }
+
+      .tax-help-top-continue {
+        padding-left: 10px;
+        padding-right: 10px;
       }
 
       .tax-example-detail {
@@ -900,7 +955,10 @@
       const exampleRate = rateText(exampleBracket.rate);
 
       return `
-        <div class="tax-help-bigtime-title">PAY ATTENTION MR BIG TIME</div>
+        <div class="tax-help-top-row">
+          <div class="tax-help-bigtime-title">PAY ATTENTION MR BIG TIME</div>
+          <button class="small-btn tax-help-top-continue" id="helpContinueTop" type="button">Continue</button>
+        </div>
         <div class="tax-help-intro">Read this bro, really read it. Unless you're one of the smart ones and don't need it because you're bigger than the Government, move on. But if you're not, and you actually want to understand how this works, read below. Then read it again. Then read it again.</div>
         <div class="tax-help-title">AUSTRALIAN TAX BRACKETS</div>
         <div class="tax-bracket-grid">${headerRow}${rows}</div>
@@ -917,10 +975,10 @@
             <li>Your wallet now says <strong>$0</strong>. But in this simple example, you still have <strong>$51,060</strong> that was meant for the Government. How are you going to pay it when the money is already gone?</li>
             <li>And don't forget: if you start making money again while you dropped back down to <strong>$0</strong>, you are in that <strong>37c</strong> bracket, each new $1 has another <strong>37c</strong> owing on it as well. People forget that part when they gamble it. Picture it, really picture it, you spent the entire <strong>$138,000</strong> and went <strong>ALL</strong> the way down to <strong>$0</strong>, you owe the Government <strong>$51,060</strong>, you have <strong>$0</strong>, you go and make more new money the next day and guess what, you owe <strong>37c</strong> for every $1. Even though you're back at <strong>$0</strong>, you make <strong>$1,000</strong> the next day, guess what, you owe <strong>$370</strong> on that <strong>$1,000</strong>. Are you cracking the code yet?</li>
             <li class="tax-example-detail-item">
-              <div class="tax-example-detail">
+              <div class="tax-example-detail tax-example-bordered">
                 <p>You were supposed to separate <strong>$51,060</strong> from the <strong>$138,000</strong> you made.</p>
 
-                <div class="tax-example-breakdown">
+                <div class="tax-example-breakdown tax-example-breakdown-accent">
                   <div class="tax-example-breakdown-row"><span><strong>So you make:</strong></span><strong>$138,000</strong></div>
                   <div class="tax-example-breakdown-row"><span><strong>Your take:</strong></span><strong>$86,940</strong></div>
                   <div class="tax-example-breakdown-row"><span><strong>The Government’s take:</strong></span><strong>$51,060</strong></div>
@@ -934,7 +992,21 @@
 
                 <p><strong>How do you pay the $51,060 back, bro?</strong></p>
 
-                <p><strong>$138,000 → blew it all → $0 → still have a tax problem.</strong></p>
+                <div class="tax-example-detail">
+  <p class="tax-example-red-box"><strong>$138,000 → blew it all → $0 → still have a $51,060 tax problem → make $1,000 the next day → owe $370 from the $1,000 → leaves you with $630</strong></p>
+
+  <p class="tax-example-red-text">$0 with $51,060 owing</p>
+
+  <p class="tax-example-breakdown-accent"><strong>So you make the next day: $1,000</strong></p>
+
+  <div class="tax-example-breakdown tax-example-breakdown-accent">
+    <div class="tax-example-breakdown-row"><span><strong>Your take:</strong></span><strong>$630</strong></div>
+    <div class="tax-example-breakdown-row"><span><strong>The Government’s take:</strong></span><strong>$370</strong></div>
+  </div>
+
+  <p><strong>$51,060 + $370 = $51,430 owing to the Government.</strong></p>
+  <p><strong>You owe 37c for EVERY NEW $1 you make while you’re in that 37c bracket.</strong></p>
+</div>
 
                 <p>Someone who has just started making money, feels like they're killing it, and hasn't yet internalised that revenue sitting in their account isn't necessarily all theirs to spend.</p>
               </div>
@@ -948,10 +1020,10 @@
 
     function helpSlides() {
       return [
-        { type: "text", content: "INCOME\n\nIncome is money in.\n\nYou sold a $5 sandwich today.\nSomeone paid you $5 into your bank today.\n\nThat is INCOME." },
-        { type: "text", content: "DEDUCTION\n\nA deduction is money you spent on your business.\n\nExample: $3 bread, $2 peanut butter, and an $8 knife to spread it.\n\nThose are DEDUCTIONS." },
+        { type: "text", content: "INCOME\n\nIncome is money in.\n\nYou sold a $5 sandwich today.\nSomeone paid you $5 into your bank today.\n\nMoney into your bank, is \"income\"\n\nThat is INCOME." },
+        { type: "text", content: "DEDUCTION\n\nA deduction is money you spent on your business in order to actually GET the income.\n\nExample: $3 bread loaf, $5 peanut butter, and a $50 cool butter knife to spread it.\n\nYou spent money in order for you to make money.\n\nThose are DEDUCTIONS." },
         { type: "brackets", content: taxBracketHelpHTML() },
-        { type: "text", content: "WHY $18,200?\n\n$18,200 is the tax-free threshold for an Australian resident.\n\nThat is why the tracker says the goal is to bring taxable income back toward $18,200: deductions reduce taxable income, and income at or below the threshold has no basic income tax in this tracker." }
+        { type: "text", content: "WHY $18,200?\n\n$18,200 is the tax-free threshold set by the Australian Government for Australian residents.\n\nThat is why the tracker says the goal is to bring taxable income back toward $18,200: <span class="help-accent-bold">deductions reduce taxable income</span>, and income at or below the threshold has no basic income tax in this tracker." }
       ];
     }
 
@@ -1308,7 +1380,25 @@
         helpText.textContent = slide.content;
       }
 
-      document.getElementById("helpContinue").textContent = helpSlide === slides.length - 1 ? "Done" : "Continue";
+      const continueLabel = helpSlide === slides.length - 1 ? "Done" : "Continue";
+      document.getElementById("helpContinue").textContent = continueLabel;
+
+      const helpContinueTop = document.getElementById("helpContinueTop");
+      if (helpContinueTop) {
+        helpContinueTop.textContent = continueLabel;
+        helpContinueTop.addEventListener("click", advanceHelp);
+      }
+    }
+
+    function advanceHelp() {
+      const slides = helpSlides();
+      helpSlide++;
+      if (helpSlide >= slides.length) {
+        localStorage.setItem("taxTracker.seen", "true");
+        document.getElementById("helpModal").style.display = "none";
+      } else {
+        renderHelp();
+      }
     }
 
     document.getElementById("prevFY").addEventListener("click", () => {
@@ -1412,16 +1502,7 @@
     });
 
     document.getElementById("helpBtn").addEventListener("click", openHelp);
-    document.getElementById("helpContinue").addEventListener("click", () => {
-      const slides = helpSlides();
-      helpSlide++;
-      if (helpSlide >= slides.length) {
-        localStorage.setItem("taxTracker.seen", "true");
-        document.getElementById("helpModal").style.display = "none";
-      } else {
-        renderHelp();
-      }
-    });
+    document.getElementById("helpContinue").addEventListener("click", advanceHelp);
 
     document.getElementById("resetBtn").addEventListener("click", () => {
       document.getElementById("resetText").textContent = `Are you sure you want to reset ${fyText()}?`;
