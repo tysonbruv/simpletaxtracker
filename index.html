@@ -272,6 +272,29 @@
       text-overflow: ellipsis;
     }
 
+    .weekly-ad-label {
+      margin-top: 14px;
+      margin-bottom: 6px;
+      color: var(--text);
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: .01em;
+      text-align: left;
+    }
+
+    .weekly-ad {
+      min-height: 560px;
+      margin-top: 0;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: #101010;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 20px;
+    }
+
     .log-screen { display: none; }
 
     .log-top {
@@ -641,6 +664,17 @@
         padding-right: 10px;
       }
 
+      .weekly-ad-label {
+        margin-top: 12px;
+        margin-bottom: 6px;
+        font-size: 17px;
+      }
+
+      .weekly-ad {
+        min-height: 430px;
+        margin-top: 0;
+      }
+
       .tax-example-detail {
         width: calc(100% - 6px);
       }
@@ -794,6 +828,9 @@
         <button class="small-btn view-btn" id="viewDeductions">View all</button>
       </div>
       <div id="deductionPreview" class="preview-list"></div>
+
+      <div class="weekly-ad-label">Advertisement for the week</div>
+      <div class="weekly-ad" id="weeklyAd" aria-label="Ad for the week"></div>
     </section>
   </main>
 
