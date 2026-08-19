@@ -842,16 +842,28 @@
         grid-template-columns: repeat(3, 1fr);
       }
 
-      #incomeBack,
+      .log-top {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  align-items: center;
+  width: 100%;
+}
 
-#deductionBack {
+.log-nav {
+  display: contents;
+}
 
-  width: 100px;
-
-  min-width: 100px;
-
+#incomeBack,
+#deductionBack,
+#incomeNewer,
+#incomeOlder,
+#deductionNewer,
+#deductionOlder {
+  width: 100%;
+  min-width: 0;
+  margin: 0;
   white-space: nowrap;
-
 }
       }
     }
