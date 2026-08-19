@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Tax Owing Tracker</title>
+  <title>Simple Tax AU</title>
   <style>
     :root {
       --bg: #0e0e0e;
@@ -375,6 +375,20 @@
       margin-top: 8px;
       color: var(--muted);
       font-size: 15px;
+    }
+
+    .log-page-status {
+      margin-top: 4px;
+      color: var(--muted2);
+      font-size: 14px;
+      text-align: right;
+    }
+
+    .log-nav .view-btn:disabled {
+      opacity: .35;
+      cursor: default;
+      color: var(--muted2);
+      border-color: var(--border-soft);
     }
 
     .log-nav {
@@ -843,35 +857,34 @@
       }
 
       .log-top {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
-  align-items: center;
-  width: 100%;
-}
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 12px;
+        align-items: center;
+        width: 100%;
+      }
 
-.log-nav {
-  display: contents;
-}
+      .log-nav {
+        display: contents;
+      }
 
-#incomeBack,
-#deductionBack,
-#incomeNewer,
-#incomeOlder,
-#deductionNewer,
-#deductionOlder {
-  width: 100%;
-  min-width: 0;
-  margin: 0;
-  white-space: nowrap;
-}
+      #incomeBack,
+      #deductionBack,
+      #incomeNewer,
+      #incomeOlder,
+      #deductionNewer,
+      #deductionOlder {
+        width: 100%;
+        min-width: 0;
+        margin: 0;
+        white-space: nowrap;
       }
     }
   </style>
 </head>
 <body>
   <main id="mainScreen" class="screen">
-    <h1>Tax Owing Tracker</h1>
+    <h1>Simple Tax AU</h1>
 
     <div class="top-row">
       <button class="small-btn" id="prevFY">&lt;</button>
@@ -961,7 +974,7 @@
 
   <section id="incomeScreen" class="screen log-screen">
     <div class="log-top">
-      <button class="small-btn" id="incomeBack">&lt; Back</button>
+      <button class="small-btn" id="incomeBack">Back</button>
       <div class="log-nav">
         <button class="small-btn view-btn" id="incomeNewer">Newer</button>
         <button class="small-btn view-btn" id="incomeOlder">Older</button>
@@ -971,13 +984,14 @@
       <h2>Income Log</h2>
       <div class="tip">Enter your daily total after work</div>
       <div class="count" id="incomeCount">0 / 365 entries stored</div>
+      <div class="log-page-status" id="incomePageStatus">0 / 73 • Page 1 of 1</div>
     </div>
     <div id="incomeLog" class="log-list"></div>
   </section>
 
   <section id="deductionScreen" class="screen log-screen">
     <div class="log-top">
-      <button class="small-btn" id="deductionBack">&lt; Back</button>
+      <button class="small-btn" id="deductionBack">Back</button>
       <div class="log-nav">
         <button class="small-btn view-btn" id="deductionNewer">Newer</button>
         <button class="small-btn view-btn" id="deductionOlder">Older</button>
@@ -987,6 +1001,7 @@
       <h2>Deduction Log</h2>
       <div class="tip">Enter your daily total after work</div>
       <div class="count" id="deductionCount">0 / 365 entries stored</div>
+      <div class="log-page-status" id="deductionPageStatus">0 / 73 • Page 1 of 1</div>
     </div>
     <div id="deductionLog" class="log-list"></div>
   </section>
@@ -1035,7 +1050,7 @@
     const BASE = 18200;
     const BAR_CAP = 150000;
     const MAX_ENTRIES = 365;
-    const LOG_PAGE_SIZE = 50;
+    const LOG_PAGE_SIZE = 73;
 
     function taxRulesForYear(startYear) {
       if (startYear <= 2023) {
@@ -1414,8 +1429,20 @@
       const page = isDeduction ? deductionLogPage : incomeLogPage;
       const log = document.getElementById(isDeduction ? "deductionLog" : "incomeLog");
       const count = document.getElementById(isDeduction ? "deductionCount" : "incomeCount");
+      const pageStatus = document.getElementById(isDeduction ? "deductionPageStatus" : "incomePageStatus");
+      const newerBtn = document.getElementById(isDeduction ? "deductionNewer" : "incomeNewer");
+      const olderBtn = document.getElementById(isDeduction ? "deductionOlder" : "incomeOlder");
+
+      const totalPages = Math.max(1, Math.ceil(list.length / LOG_PAGE_SIZE));
+      const entriesOnThisPage = list.length === 0
+        ? 0
+        : Math.min(LOG_PAGE_SIZE, Math.max(0, list.length - (page * LOG_PAGE_SIZE)));
 
       count.textContent = `${list.length} / ${MAX_ENTRIES} entries stored`;
+      pageStatus.textContent = `${entriesOnThisPage} / ${LOG_PAGE_SIZE} • Page ${page + 1} of ${totalPages}`;
+      newerBtn.disabled = page === 0;
+      olderBtn.disabled = page >= totalPages - 1;
+
       log.innerHTML = "";
 
       if (!list.length) {
