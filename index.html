@@ -424,6 +424,30 @@
       text-align: right;
     }
 
+    .delete-undo-bar {
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 10px;
+      padding: 8px 10px;
+      background: #111111;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+    }
+
+    .delete-undo-text {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .delete-undo-btn {
+      flex: 0 0 auto;
+      min-width: 70px;
+      color: var(--accent2);
+      font-weight: 800;
+    }
+
     .log-nav .view-btn:disabled {
       opacity: .35;
       cursor: default;
@@ -1106,8 +1130,12 @@
       <h2>Income Log</h2>
       <div class="tip">Enter your daily total after work</div>
       <div class="count" id="incomeCount">0 / 365 entries stored</div>
-      <div class="log-delete-hint">X moves colour bar down</div>
+      
       <div class="log-page-status" id="incomePageStatus">0 / 73 • Page 1 of 1</div>
+      <div class="delete-undo-bar" id="incomeUndoBar">
+        <div class="delete-undo-text">Deleted income entry</div>
+        <button class="small-btn delete-undo-btn" id="incomeUndoBtn" type="button">Undo</button>
+      </div>
     </div>
     <div id="incomeLog" class="log-list"></div>
 
@@ -1155,8 +1183,12 @@
       <h2>Deduction Log</h2>
       <div class="tip">Enter your daily total after work</div>
       <div class="count" id="deductionCount">0 / 365 entries stored</div>
-      <div class="log-delete-hint">X moves colour bar up</div>
+      
       <div class="log-page-status" id="deductionPageStatus">0 / 73 • Page 1 of 1</div>
+      <div class="delete-undo-bar" id="deductionUndoBar">
+        <div class="delete-undo-text">Deleted deduction entry</div>
+        <button class="small-btn delete-undo-btn" id="deductionUndoBtn" type="button">Undo</button>
+      </div>
     </div>
     <div id="deductionLog" class="log-list"></div>
 
@@ -1610,6 +1642,65 @@
       deductionLogPage = Math.max(0, Math.min(deductionLogPage, maxPageForCount(deductions.length)));
     }
 
+    let pendingDeleteUndo = null;
+    let pendingDeleteUndoTimer = null;
+
+    function hideDeleteUndo() {
+      document.getElementById("incomeUndoBar").style.display = "none";
+      document.getElementById("deductionUndoBar").style.display = "none";
+
+      if (pendingDeleteUndoTimer) {
+        clearTimeout(pendingDeleteUndoTimer);
+        pendingDeleteUndoTimer = null;
+      }
+
+      pendingDeleteUndo = null;
+    }
+
+    function showDeleteUndo(type, entry, originalIndex) {
+      if (pendingDeleteUndoTimer) clearTimeout(pendingDeleteUndoTimer);
+
+      const isDeduction = type === "deduction";
+      const incomeBar = document.getElementById("incomeUndoBar");
+      const deductionBar = document.getElementById("deductionUndoBar");
+
+      incomeBar.style.display = "none";
+      deductionBar.style.display = "none";
+
+      pendingDeleteUndo = {
+        type,
+        entry: { ...entry },
+        originalIndex
+      };
+
+      (isDeduction ? deductionBar : incomeBar).style.display = "flex";
+
+      pendingDeleteUndoTimer = setTimeout(() => {
+        hideDeleteUndo();
+      }, 5000);
+    }
+
+    function undoLastDelete() {
+      if (!pendingDeleteUndo) return;
+
+      const { type, entry, originalIndex } = pendingDeleteUndo;
+      const isDeduction = type === "deduction";
+      const list = isDeduction ? deductions : incomes;
+      const safeIndex = Math.max(0, Math.min(originalIndex, list.length));
+
+      list.splice(safeIndex, 0, entry);
+
+      const newestPosition = list.length - 1 - safeIndex;
+      const restoredPage = Math.max(0, Math.floor(newestPosition / LOG_PAGE_SIZE));
+
+      if (isDeduction) deductionLogPage = restoredPage;
+      else incomeLogPage = restoredPage;
+
+      hideDeleteUndo();
+      updateUI();
+      renderFullList(type);
+    }
+
     function renderFullList(type) {
       clampLogPages();
 
@@ -1655,7 +1746,9 @@
         `;
 
         row.querySelector("button").addEventListener("click", () => {
+          const deletedEntry = list[realIndex];
           list.splice(realIndex, 1);
+          showDeleteUndo(type, deletedEntry, realIndex);
           clampLogPages();
           updateUI();
           renderFullList(type);
@@ -1843,6 +1936,9 @@
 
     document.getElementById("incomeBack").addEventListener("click", () => showScreen("main"));
     document.getElementById("deductionBack").addEventListener("click", () => showScreen("main"));
+
+    document.getElementById("incomeUndoBtn").addEventListener("click", undoLastDelete);
+    document.getElementById("deductionUndoBtn").addEventListener("click", undoLastDelete);
 
     document.getElementById("incomeOlder").addEventListener("click", () => {
       if (incomeLogPage < maxPageForCount(incomes.length)) incomeLogPage++;
