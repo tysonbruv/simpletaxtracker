@@ -101,6 +101,39 @@
     .reset-btn { width: 137px; }
     .help-btn { width: 53px; }
 
+    .main-top-row {
+      margin-top: 48px;
+    }
+
+    .help-btn-wrap {
+      position: relative;
+      flex: 0 0 auto;
+    }
+
+    .help-hint {
+      position: absolute;
+      right: 0;
+      bottom: calc(100% + 22px);
+      width: 410px;
+      color: var(--muted2);
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 1.35;
+      text-align: right;
+      pointer-events: none;
+    }
+
+    .help-hint::after {
+      content: "↓";
+      position: absolute;
+      right: 20px;
+      top: calc(100% + 1px);
+      color: var(--muted2);
+      font-size: 18px;
+      font-weight: 700;
+      line-height: 1;
+    }
+
     /* Desktop top row: keep FY navigation together and push utility buttons right. */
     @media (min-width: 681px) {
       .fy-label {
@@ -377,8 +410,15 @@
       font-size: 15px;
     }
 
-    .log-page-status {
+    .log-delete-hint {
       margin-top: 4px;
+      color: var(--muted2);
+      font-size: 12px;
+      text-align: right;
+    }
+
+    .log-page-status {
+      margin-top: 2px;
       color: var(--muted2);
       font-size: 14px;
       text-align: right;
@@ -530,7 +570,7 @@
       align-items: center;
       justify-content: space-between;
       gap: 12px;
-      margin-bottom: 8px;
+      margin-bottom: 2px;
     }
 
     .tax-help-bigtime-title {
@@ -547,19 +587,29 @@
     }
 
     .tax-help-intro {
-      margin-bottom: 18px;
+      margin-bottom: 12px;
       color: var(--text);
       font-size: 15px;
       font-weight: 700;
       line-height: 1.45;
+      border: 1px solid var(--accent);
+      border-radius: 10px;
+      padding: 12px 14px;
     }
 
     .tax-help-title {
-      margin-bottom: 16px;
+      margin-bottom: 1px;
       color: var(--text);
       font-size: 18px;
       font-weight: 700;
       letter-spacing: .02em;
+    }
+
+    .tax-bracket-box {
+      border: 1px solid var(--accent2);
+      border-radius: 10px;
+      padding: 14px;
+      margin-top: 0;
     }
 
     .tax-bracket-grid {
@@ -596,6 +646,15 @@
 
     .tax-bracket-dash {
       color: var(--muted);
+      text-align: center;
+    }
+
+    .tax-bracket-explain {
+      margin: 8px auto 0;
+      max-width: 500px;
+      color: var(--text);
+      font-size: 13px;
+      line-height: 1.45;
       text-align: center;
     }
 
@@ -799,6 +858,15 @@
         flex-wrap: wrap;
       }
 
+      .main-top-row {
+        margin-top: 76px;
+      }
+
+      .help-hint {
+        width: 245px;
+        font-size: 11px;
+      }
+
       .fy-label {
         min-width: 200px;
       }
@@ -886,12 +954,15 @@
   <main id="mainScreen" class="screen">
     <h1>Simple Tax AU</h1>
 
-    <div class="top-row">
+    <div class="top-row main-top-row">
       <button class="small-btn" id="prevFY">&lt;</button>
       <div class="fy-label" id="fyLabel">Financial Year: 2025-2026</div>
       <button class="small-btn" id="nextFY">&gt;</button>
       <button class="small-btn reset-btn" id="resetBtn">Reset FY</button>
-      <button class="small-btn help-btn" id="helpBtn">?</button>
+      <div class="help-btn-wrap">
+        <div class="help-hint">Yes this app works and is very simple, you just need to figure it out</div>
+        <button class="small-btn help-btn" id="helpBtn">?</button>
+      </div>
     </div>
 
     <section class="money-area">
@@ -935,7 +1006,7 @@
 
       <div class="weekly-ad-label">Advertisement for the week</div>
 
-<div class="weekly-ad" id="weeklyAd" aria-label="Advertisement for the week">
+<div class="weekly-ad" aria-label="Advertisement for the week">
 
   <div class="weekly-ad-slide">
     <img src="./advertisements/Ransom-Grimus-Burgers.jpg" alt="Ransom Grimus Burgers advertisement">
@@ -966,7 +1037,7 @@
     <div>Maximum 5 advertisers per week.</div>
   </div>
 
-  <div class="weekly-ad-timer" id="weeklyAdTimer">1:00</div>
+  <div class="weekly-ad-timer">1:00</div>
 
 </div>
     </section>
@@ -984,9 +1055,45 @@
       <h2>Income Log</h2>
       <div class="tip">Enter your daily total after work</div>
       <div class="count" id="incomeCount">0 / 365 entries stored</div>
+      <div class="log-delete-hint">deleting a log, brings colour bar down.</div>
       <div class="log-page-status" id="incomePageStatus">0 / 73 • Page 1 of 1</div>
     </div>
     <div id="incomeLog" class="log-list"></div>
+
+      <div class="weekly-ad-label">Advertisement for the week</div>
+
+      <div class="weekly-ad" aria-label="Advertisement for the week">
+
+        <div class="weekly-ad-slide">
+          <img src="./advertisements/Ransom-Grimus-Burgers.jpg" alt="Ransom Grimus Burgers advertisement">
+        </div>
+
+        <div class="weekly-ad-slide">
+          <img src="./advertisements/VHSRewind4.jpg" alt="VHS Rewind 4 advertisement">
+        </div>
+
+        <div class="weekly-ad-slide">
+          <img src="./advertisements/VHSRewind3.jpg" alt="VHS Rewind 3 advertisement">
+        </div>
+
+        <div class="weekly-ad-slide">
+          <img src="./advertisements/VHSRewind2.jpg" alt="VHS Rewind 2 advertisement">
+        </div>
+
+        <div class="weekly-ad-slide">
+          <img src="./advertisements/VHSRewind.jpg" alt="VHS Rewind advertisement">
+        </div>
+
+      </div>
+
+      <div class="weekly-ad-footer">
+        <div class="weekly-ad-pricing">
+          <div><strong>Weekly Advertising — $20</strong></div>
+          <div>Maximum 5 advertisers per week.</div>
+        </div>
+
+        <div class="weekly-ad-timer">1:00</div>
+      </div>
   </section>
 
   <section id="deductionScreen" class="screen log-screen">
@@ -1001,9 +1108,45 @@
       <h2>Deduction Log</h2>
       <div class="tip">Enter your daily total after work</div>
       <div class="count" id="deductionCount">0 / 365 entries stored</div>
+      <div class="log-delete-hint">deleting a deduction log, brings colour bar up.</div>
       <div class="log-page-status" id="deductionPageStatus">0 / 73 • Page 1 of 1</div>
     </div>
     <div id="deductionLog" class="log-list"></div>
+
+      <div class="weekly-ad-label">Advertisement for the week</div>
+
+      <div class="weekly-ad" aria-label="Advertisement for the week">
+
+        <div class="weekly-ad-slide">
+          <img src="./advertisements/Ransom-Grimus-Burgers.jpg" alt="Ransom Grimus Burgers advertisement">
+        </div>
+
+        <div class="weekly-ad-slide">
+          <img src="./advertisements/VHSRewind4.jpg" alt="VHS Rewind 4 advertisement">
+        </div>
+
+        <div class="weekly-ad-slide">
+          <img src="./advertisements/VHSRewind3.jpg" alt="VHS Rewind 3 advertisement">
+        </div>
+
+        <div class="weekly-ad-slide">
+          <img src="./advertisements/VHSRewind2.jpg" alt="VHS Rewind 2 advertisement">
+        </div>
+
+        <div class="weekly-ad-slide">
+          <img src="./advertisements/VHSRewind.jpg" alt="VHS Rewind advertisement">
+        </div>
+
+      </div>
+
+      <div class="weekly-ad-footer">
+        <div class="weekly-ad-pricing">
+          <div><strong>Weekly Advertising — $20</strong></div>
+          <div>Maximum 5 advertisers per week.</div>
+        </div>
+
+        <div class="weekly-ad-timer">1:00</div>
+      </div>
   </section>
 
   <div class="modal-backdrop" id="dateModal">
@@ -1136,9 +1279,12 @@
           <div class="tax-help-bigtime-title">PAY ATTENTION MR BIG TIME</div>
           <button class="small-btn tax-help-top-continue" id="helpContinueTop" type="button">Continue</button>
         </div>
-        <div class="tax-help-intro">Read this bro, really read it. Unless you're one of the smart ones and don't need it because you're bigger than the Government, move on. But if you're not, and you actually want to understand how this works, read below. Then read it again. Then read it again.</div>
+        <div class="tax-help-intro">Read this bro. Actually read it. Unless you're one of those "smart" ones who thinks they already know everything, move on. But if you're tired of making money and still somehow ending up broke, read below. Learn the game. Stop moving like a peasant. Read it. Then read it again. Then read it again.</div>
         <div class="tax-help-title">AUSTRALIAN TAX BRACKETS</div>
-        <div class="tax-bracket-grid">${headerRow}${rows}</div>
+        <div class="tax-bracket-box">
+          <div class="tax-bracket-grid">${headerRow}${rows}</div>
+          <div class="tax-bracket-explain">That's just how it works. if you make money, you owe the Government a certain percentage of that money. Don't get angry at me, i didn't make it up. But let's get into what happens if you <strong>Gamble the Governments money down below.</strong> <strong>READ IT!</strong></div>
+        </div>
 
         <div class="tax-bracket-example">
           <div class="tax-example-heading">Now really understand what those cents mean.</div>
@@ -1181,7 +1327,7 @@
     <div class="tax-example-breakdown-row"><span><strong>The Government’s take:</strong></span><strong>$370</strong></div>
   </div>
 
-  <p><strong>$51,060 + $370 = $51,430 owing to the Government.</strong></p>
+  <p><strong style="color: var(--accent2);">$51,060 + $370 = $51,430 owing to the Government.</strong></p>
   <p><strong>You owe 37c for EVERY NEW $1 you make while you’re in that 37c bracket.</strong></p>
 </div>
 
@@ -1714,46 +1860,50 @@
     renderDateButton();
     updateUI();
 
-    const weeklyAdSlides = Array.from(document.querySelectorAll(".weekly-ad-slide"));
-    const weeklyAdTimer = document.getElementById("weeklyAdTimer");
-    let weeklyAdIndex = 0;
-    let weeklyAdSecondsLeft = 60;
+    document.querySelectorAll(".weekly-ad").forEach((weeklyAd) => {
+      const slides = Array.from(weeklyAd.querySelectorAll(".weekly-ad-slide"));
+      const footer = weeklyAd.nextElementSibling;
+      const timer = footer ? footer.querySelector(".weekly-ad-timer") : null;
 
-    if (weeklyAdSlides.length > 0) {
-      weeklyAdSlides.forEach(slide => slide.classList.remove("active"));
-      weeklyAdSlides[0].classList.add("active");
-    }
+      let index = 0;
+      let secondsLeft = 60;
 
-    function renderWeeklyAdTimer() {
-      if (!weeklyAdTimer) return;
-      const minutes = Math.floor(weeklyAdSecondsLeft / 60);
-      const seconds = weeklyAdSecondsLeft % 60;
-      weeklyAdTimer.textContent = `${minutes}:${String(seconds).padStart(2, "0")}`;
-    }
+      if (slides.length > 0) {
+        slides.forEach(slide => slide.classList.remove("active"));
+        slides[0].classList.add("active");
+      }
 
-    function advanceWeeklyAd() {
-      if (weeklyAdSlides.length <= 1) return;
-      weeklyAdSlides[weeklyAdIndex].classList.remove("active");
-      weeklyAdIndex = (weeklyAdIndex + 1) % weeklyAdSlides.length;
-      weeklyAdSlides[weeklyAdIndex].classList.add("active");
-      weeklyAdSecondsLeft = 60;
-      renderWeeklyAdTimer();
-    }
+      function renderTimer() {
+        if (!timer) return;
+        const minutes = Math.floor(secondsLeft / 60);
+        const seconds = secondsLeft % 60;
+        timer.textContent = `${minutes}:${String(seconds).padStart(2, "0")}`;
+      }
 
-    if (weeklyAdSlides.length > 1) {
-      weeklyAdTimer.style.display = "block";
-      renderWeeklyAdTimer();
+      function advanceAd() {
+        if (slides.length <= 1) return;
+        slides[index].classList.remove("active");
+        index = (index + 1) % slides.length;
+        slides[index].classList.add("active");
+        secondsLeft = 60;
+        renderTimer();
+      }
 
-      setInterval(() => {
-        weeklyAdSecondsLeft--;
+      if (slides.length > 1 && timer) {
+        timer.style.display = "block";
+        renderTimer();
 
-        if (weeklyAdSecondsLeft <= 0) {
-          advanceWeeklyAd();
-        } else {
-          renderWeeklyAdTimer();
-        }
-      }, 1000);
-    }
+        setInterval(() => {
+          secondsLeft--;
+
+          if (secondsLeft <= 0) {
+            advanceAd();
+          } else {
+            renderTimer();
+          }
+        }, 1000);
+      }
+    });
 
     if (localStorage.getItem("taxTracker.seen") !== "true") {
       openHelp();
