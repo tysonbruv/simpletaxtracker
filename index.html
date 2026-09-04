@@ -1562,13 +1562,21 @@
       `;
     }
 
+    function dataStorageHelpSlide() {
+      return {
+        type: "text",
+        content: "YOUR DATA\n\nData is stored on this device locally.\n\nIf you delete the app, the income and deduction logs you entered will be gone too. There is no account or online backup holding a copy of them.\n\nSo once you delete the app, that’s it. Gone.\n\nWrite down or keep a copy of any logs you entered for each financial year before you do delete the app, just in case you ever need to prove where the numbers came from. Tax audits do happen. Take care."
+      };
+    }
+
     function helpSlides() {
       if (taxMode === "company") {
         return [
           { type: "text", content: "INCOME\\n\\nIncome is money in.\\n\\nMoney the company earns goes in here.\\n\\nThat is INCOME." },
           { type: "text", content: "DEDUCTION\\n\\nA deduction is money the company spent in order to make its income.\\n\\nDeductions reduce taxable company income.\\n\\nThose are DEDUCTIONS." },
           { type: "brackets", content: companyTaxHelpHTML() },
-          { type: "html", content: "WHY NO $18,200?\\n\\nThe $18,200 tax-free threshold is for Australian resident individuals. A company is a separate tax structure, so this tracker applies the company rate you selected from the first $1 of positive taxable company income." }
+          { type: "html", content: "WHY NO $18,200?\\n\\nThe $18,200 tax-free threshold is for Australian resident individuals. A company is a separate tax structure, so this tracker applies the company rate you selected from the first $1 of positive taxable company income." },
+          dataStorageHelpSlide()
         ];
       }
 
@@ -1576,7 +1584,8 @@
         { type: "text", content: "INCOME\n\nIncome is money in.\n\nYou sold a $5 sandwich today.\nSomeone paid you $5 into your bank today.\n\nMoney into your bank, is \"income\"\n\nThat is INCOME." },
         { type: "text", content: "DEDUCTION\n\nA deduction is money you spent on your business in order to actually GET the income.\n\nExample: $3 bread loaf, $5 peanut butter, and a $50 cool butter knife to spread it.\n\nYou spent money in order for you to make money.\n\nThose are DEDUCTIONS." },
         { type: "brackets", content: taxBracketHelpHTML() },
-        { type: "html", content: "WHY $18,200?\n\n$18,200 is the tax-free threshold set by the Australian Government for Australian residents.\n\nThat is why the tracker says the goal is to bring taxable income back toward $18,200: <span class='help-accent-bold'>deductions reduce taxable income</span>, and income at or below the threshold has no basic income tax in this tracker." }
+        { type: "html", content: "WHY $18,200?\n\n$18,200 is the tax-free threshold set by the Australian Government for Australian residents.\n\nThat is why the tracker says the goal is to bring taxable income back toward $18,200: <span class='help-accent-bold'>deductions reduce taxable income</span>, and income at or below the threshold has no basic income tax in this tracker." },
+        dataStorageHelpSlide()
       ];
     }
 
@@ -2097,7 +2106,7 @@
         helpText.textContent = slide.content;
       }
 
-      const continueLabel = helpSlide === slides.length - 1 ? "Done" : "Continue";
+      const continueLabel = "Continue";
       document.getElementById("helpContinue").textContent = continueLabel;
 
       const helpContinueTop = document.getElementById("helpContinueTop");
