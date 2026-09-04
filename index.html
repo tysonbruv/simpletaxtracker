@@ -101,6 +101,75 @@
     .reset-btn { width: 137px; }
     .help-btn { width: 53px; }
 
+    .tax-mode-wrap {
+      margin-top: 18px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 9px;
+    }
+
+    .segmented-toggle {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      width: 360px;
+      max-width: 100%;
+      padding: 4px;
+      background: #202024;
+      border: 1px solid var(--border-soft);
+      border-radius: 13px;
+    }
+
+    .segment-btn {
+      min-width: 0;
+      min-height: 42px;
+      padding: 7px 14px;
+      border: 0;
+      border-radius: 10px;
+      background: transparent;
+      color: var(--text);
+      cursor: pointer;
+      font-weight: 700;
+      line-height: 1.1;
+    }
+
+    .segment-btn.active {
+      background: #5b5b61;
+    }
+
+    .company-rate-wrap {
+      display: none;
+      width: 360px;
+      max-width: 100%;
+    }
+
+    .company-rate-label {
+      margin: 0 0 5px 4px;
+      color: var(--muted2);
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .company-rate-toggle .segment-btn {
+      min-height: 48px;
+    }
+
+    .segment-rate-main,
+    .segment-rate-sub {
+      display: block;
+    }
+
+    .segment-rate-main {
+      font-size: 15px;
+    }
+
+    .segment-rate-sub {
+      margin-top: 3px;
+      color: #d5d5d5;
+      font-size: 10px;
+      font-weight: 600;
+    }
+
     .main-top-row {
       margin-top: 48px;
     }
@@ -882,6 +951,20 @@
         flex-wrap: wrap;
       }
 
+      .tax-mode-wrap,
+      .segmented-toggle,
+      .company-rate-wrap {
+        width: 100%;
+      }
+
+      .tax-mode-wrap {
+        margin-top: 16px;
+      }
+
+      .segment-btn {
+        min-height: 44px;
+      }
+
       .main-top-row {
         display: grid;
         grid-template-columns: 53px minmax(0, 1fr) 53px;
@@ -1032,6 +1115,27 @@
 <body>
   <main id="mainScreen" class="screen">
     <h1>Simple Tax AU</h1>
+
+    <div class="tax-mode-wrap">
+      <div class="segmented-toggle tax-mode-toggle" role="group" aria-label="Tax structure">
+        <button class="segment-btn active" id="soleTraderMode" type="button">Sole Trader</button>
+        <button class="segment-btn" id="companyMode" type="button">Company</button>
+      </div>
+
+      <div class="company-rate-wrap" id="companyRateWrap">
+        <div class="company-rate-label">Company tax rate</div>
+        <div class="segmented-toggle company-rate-toggle" role="group" aria-label="Company tax rate">
+          <button class="segment-btn active" id="company25" type="button">
+            <span class="segment-rate-main">25%</span>
+            <span class="segment-rate-sub">Base Rate</span>
+          </button>
+          <button class="segment-btn" id="company30" type="button">
+            <span class="segment-rate-main">30%</span>
+            <span class="segment-rate-sub">Standard</span>
+          </button>
+        </div>
+      </div>
+    </div>
 
     <div class="top-row main-top-row">
       <button class="small-btn" id="prevFY">&lt;</button>
@@ -1416,7 +1520,58 @@
       `;
     }
 
+    function companyTaxHelpHTML() {
+      const selectedPercent = Math.round(companyTaxRate * 100);
+      const selectedCents = rateText(companyTaxRate);
+      const exampleIncome = 100000;
+      const exampleDeductions = 20000;
+      const exampleTaxable = exampleIncome - exampleDeductions;
+      const exampleTax = roundCurrency(exampleTaxable * companyTaxRate);
+
+      return `
+        <div class="tax-help-top-row">
+          <div class="tax-help-bigtime-title">COMPANY MODE</div>
+          <button class="small-btn tax-help-top-continue" id="helpContinueTop" type="button">Continue</button>
+        </div>
+
+        <div class="tax-help-intro">Company tax works differently. There is no $18,200 individual tax-free threshold here. Pick the company rate that applies, then the tracker keeps it simple.</div>
+
+        <div class="tax-help-title">COMPANY TAX</div>
+
+        <div class="tax-bracket-box">
+          <div class="tax-bracket-grid">
+            <div class="tax-bracket-head tax-bracket-head-left">Company setting</div><div></div><div class="tax-bracket-head tax-bracket-head-right">Governments take</div>
+            <div class="tax-bracket-range">25% Base Rate</div><div class="tax-bracket-dash">—</div><div class="tax-bracket-rate">25c per $1</div>
+            <div class="tax-bracket-range">30% Standard</div><div class="tax-bracket-dash">—</div><div class="tax-bracket-rate">30c per $1</div>
+          </div>
+
+          <div class="tax-bracket-explain">You currently selected <strong>${selectedPercent}%</strong>. In this tracker that means <strong>${selectedCents} owing for every $1 of taxable company income.</strong></div>
+        </div>
+
+        <div class="tax-bracket-example">
+          <div class="tax-example-heading">Simple company example.</div>
+          <ul class="tax-example-list">
+            <li>Company income: <strong>${money(exampleIncome)}</strong></li>
+            <li>Deductions: <strong>${money(exampleDeductions)}</strong></li>
+            <li>Taxable company income: <strong>${money(exampleTaxable)}</strong></li>
+            <li><strong>${money(exampleTaxable)} × ${selectedPercent}% = ${money(exampleTax, true)} tax estimate.</strong></li>
+          </ul>
+        </div>
+
+        <div class="tax-bracket-note">The 25% / 30% selector is manual. This app does not decide whether a company qualifies for the 25% base rate. Company mode is a simple estimate based on the rate you select.</div>
+      `;
+    }
+
     function helpSlides() {
+      if (taxMode === "company") {
+        return [
+          { type: "text", content: "INCOME\\n\\nIncome is money in.\\n\\nMoney the company earns goes in here.\\n\\nThat is INCOME." },
+          { type: "text", content: "DEDUCTION\\n\\nA deduction is money the company spent in order to make its income.\\n\\nDeductions reduce taxable company income.\\n\\nThose are DEDUCTIONS." },
+          { type: "brackets", content: companyTaxHelpHTML() },
+          { type: "html", content: "WHY NO $18,200?\\n\\nThe $18,200 tax-free threshold is for Australian resident individuals. A company is a separate tax structure, so this tracker applies the company rate you selected from the first $1 of positive taxable company income." }
+        ];
+      }
+
       return [
         { type: "text", content: "INCOME\n\nIncome is money in.\n\nYou sold a $5 sandwich today.\nSomeone paid you $5 into your bank today.\n\nMoney into your bank, is \"income\"\n\nThat is INCOME." },
         { type: "text", content: "DEDUCTION\n\nA deduction is money you spent on your business in order to actually GET the income.\n\nExample: $3 bread loaf, $5 peanut butter, and a $50 cool butter knife to spread it.\n\nYou spent money in order for you to make money.\n\nThose are DEDUCTIONS." },
@@ -1435,6 +1590,14 @@
     let pickerDay = 0;
     let helpSlide = 0;
 
+    let taxMode = localStorage.getItem("taxTracker.taxMode") === "company"
+      ? "company"
+      : "soleTrader";
+
+    let companyTaxRate = Number(localStorage.getItem("taxTracker.companyTaxRate")) === 0.30
+      ? 0.30
+      : 0.25;
+
     const MONEY_LIMIT = 999999999.99;
     const MONEY_LIMIT_CENTS = 99999999999;
 
@@ -1447,6 +1610,11 @@
     }
 
     function key(prefix) {
+      // Preserve all existing Sole Trader storage keys exactly as they were.
+      // Company gets its own separate Income/Deduction logs for each FY.
+      if (taxMode === "company") {
+        return `taxTracker.company.${prefix}${currentFYStart}`;
+      }
       return `taxTracker.${prefix}${currentFYStart}`;
     }
 
@@ -1533,6 +1701,24 @@
       return `${rateText(bracket.rate)} owing for each $1`;
     }
 
+    function calcCurrentTax(income) {
+      if (taxMode === "company") {
+        const taxable = Math.max(roundCurrency(income), 0);
+        return roundCurrency(taxable * companyTaxRate);
+      }
+
+      return calcProgressiveTax(income);
+    }
+
+    function currentRateLabel(income) {
+      if (taxMode === "company") {
+        if (roundCurrency(income) <= 0) return "";
+        return `${rateText(companyTaxRate)} owing for each $1`;
+      }
+
+      return marginalRateLabel(income);
+    }
+
     function totalCents(list) {
       return list.reduce((sum, e) => {
         const entryCents = Math.round(Math.abs(clampMoney(e.amount)) * 100);
@@ -1548,6 +1734,8 @@
       localStorage.setItem(key("i"), JSON.stringify(incomes));
       localStorage.setItem(key("d"), JSON.stringify(deductions));
       localStorage.setItem("taxTracker.currentFY", String(currentFYStart));
+      localStorage.setItem("taxTracker.taxMode", taxMode);
+      localStorage.setItem("taxTracker.companyTaxRate", String(companyTaxRate));
     }
 
     function loadCurrentFY() {
@@ -1766,19 +1954,77 @@
       const gross = grossCents / 100;
       const ded = dedCents / 100;
       const net = netCents / 100;
-      const tax = calcProgressiveTax(net);
+      const tax = calcCurrentTax(net);
+
+      const isCompany = taxMode === "company";
+      const soleTraderMode = document.getElementById("soleTraderMode");
+      const companyMode = document.getElementById("companyMode");
+      const companyRateWrap = document.getElementById("companyRateWrap");
+      const company25 = document.getElementById("company25");
+      const company30 = document.getElementById("company30");
+
+      soleTraderMode.classList.toggle("active", !isCompany);
+      companyMode.classList.toggle("active", isCompany);
+      soleTraderMode.setAttribute("aria-pressed", String(!isCompany));
+      companyMode.setAttribute("aria-pressed", String(isCompany));
+
+      companyRateWrap.style.display = isCompany ? "block" : "none";
+      company25.classList.toggle("active", companyTaxRate === 0.25);
+      company30.classList.toggle("active", companyTaxRate === 0.30);
+      company25.setAttribute("aria-pressed", String(companyTaxRate === 0.25));
+      company30.setAttribute("aria-pressed", String(companyTaxRate === 0.30));
 
       document.getElementById("fyLabel").textContent = `Financial Year: ${fyText()}`;
       document.getElementById("incomeDisplay").textContent = moneySmart(net);
-      document.getElementById("taxEstimate").textContent = net > BASE ? `${money(tax, true)} tax owed estimate` : "";
-      document.getElementById("rateLabel").textContent = marginalRateLabel(net);
 
-      let pct = (net - BASE) / (BAR_CAP - BASE);
-      pct = Math.max(0, Math.min(1, pct));
-      document.getElementById("barFill").style.width = `${pct * 100}%`;
+      if (isCompany) {
+        document.querySelector(".threshold").textContent = "$0";
+        document.querySelector(".goal").textContent = "Company tax applies from the first $1 of taxable income.";
+        document.getElementById("taxEstimate").textContent = net > 0 ? `${money(tax, true)} tax owed estimate` : "";
+        document.getElementById("rateLabel").textContent = currentRateLabel(net);
+
+        let pct = net / BAR_CAP;
+        pct = Math.max(0, Math.min(1, pct));
+        document.getElementById("barFill").style.width = `${pct * 100}%`;
+      } else {
+        document.querySelector(".threshold").textContent = "$18,200";
+        document.querySelector(".goal").textContent = "The goal is to bring this back to $18,200.";
+        document.getElementById("taxEstimate").textContent = net > BASE ? `${money(tax, true)} tax owed estimate` : "";
+        document.getElementById("rateLabel").textContent = currentRateLabel(net);
+
+        let pct = (net - BASE) / (BAR_CAP - BASE);
+        pct = Math.max(0, Math.min(1, pct));
+        document.getElementById("barFill").style.width = `${pct * 100}%`;
+      }
 
       renderPreviews();
       saveCurrentFY();
+    }
+
+    function switchTaxMode(nextMode) {
+      if (nextMode !== "soleTrader" && nextMode !== "company") return;
+      if (nextMode === taxMode) return;
+
+      // Save the current structure first, then load the other structure's
+      // completely separate FY logs.
+      saveCurrentFY();
+      hideDeleteUndo();
+
+      taxMode = nextMode;
+      incomeLogPage = 0;
+      deductionLogPage = 0;
+      incomes = [];
+      deductions = [];
+
+      loadCurrentFY();
+      updateUI();
+    }
+
+    function setCompanyTaxRate(nextRate) {
+      const rate = Number(nextRate) === 0.30 ? 0.30 : 0.25;
+      companyTaxRate = rate;
+      localStorage.setItem("taxTracker.companyTaxRate", String(companyTaxRate));
+      updateUI();
     }
 
     function showScreen(name) {
@@ -1922,6 +2168,11 @@
     document.getElementById("addIncome").addEventListener("click", () => addEntry(true));
     document.getElementById("addDeduction").addEventListener("click", () => addEntry(false));
 
+    document.getElementById("soleTraderMode").addEventListener("click", () => switchTaxMode("soleTrader"));
+    document.getElementById("companyMode").addEventListener("click", () => switchTaxMode("company"));
+    document.getElementById("company25").addEventListener("click", () => setCompanyTaxRate(0.25));
+    document.getElementById("company30").addEventListener("click", () => setCompanyTaxRate(0.30));
+
     document.getElementById("viewIncome").addEventListener("click", () => {
       incomeLogPage = 0;
       renderFullList("income");
@@ -1979,7 +2230,8 @@
     document.getElementById("helpContinue").addEventListener("click", advanceHelp);
 
     document.getElementById("resetBtn").addEventListener("click", () => {
-      document.getElementById("resetText").textContent = `Are you sure you want to reset ${fyText()}?`;
+      const structureName = taxMode === "company" ? "Company" : "Sole Trader";
+      document.getElementById("resetText").textContent = `Are you sure you want to reset ${structureName} ${fyText()}?`;
       document.getElementById("resetModal").style.display = "flex";
     });
 
