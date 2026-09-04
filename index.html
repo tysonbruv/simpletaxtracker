@@ -446,6 +446,73 @@
   font-weight: 800;
 }
 
+.weekly-ad-price-row {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  flex-wrap: wrap;
+}
+
+.ad-open-btn {
+  min-width: 58px;
+  height: 28px;
+  padding: 3px 9px;
+  font-size: 11px;
+}
+
+.ad-spots-head {
+  margin-top: 18px;
+}
+
+.ad-spots-week {
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.ad-spots-list {
+  display: grid;
+  gap: 7px;
+  margin-top: 14px;
+}
+
+.ad-spot-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 12px;
+  min-height: 44px;
+  padding: 0 12px;
+  background: #111111;
+  border: 1px solid #222222;
+  border-radius: 6px;
+}
+
+.ad-spot-name {
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.ad-spot-status {
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.ad-spot-status.available {
+  color: var(--accent2);
+}
+
+.ad-spot-status.taken {
+  color: var(--muted2);
+}
+
+.advertising-current-label {
+  margin-top: 38px;
+}
+
+
 .weekly-ad-timer {
   display: none;
   color: var(--muted);
@@ -455,6 +522,68 @@
   letter-spacing: .02em;
   white-space: nowrap;
 }
+
+.ad-booking-panel {
+  margin-top: 12px;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #111111;
+}
+
+.ad-booking-kicker {
+  color: var(--muted2);
+  font-size: 11px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.ad-booking-date {
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 800;
+  line-height: 1.35;
+}
+
+.ad-booking-note {
+  margin-top: 5px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.ad-book-btn {
+  width: 100%;
+  min-height: 42px;
+  margin-top: 10px;
+  background: var(--input);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 800;
+}
+
+.ad-book-btn:disabled {
+  opacity: .5;
+  cursor: default;
+}
+
+.ad-booking-result {
+  display: none;
+  margin-top: 10px;
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.ad-booking-result strong {
+  color: var(--accent2);
+}
+
 
     .weekly-ad-slide {
       position: absolute;
@@ -1237,7 +1366,7 @@
 <div class="weekly-ad-footer">
 
   <div class="weekly-ad-pricing">
-    <div><strong>Weekly Advertising — $20</strong></div>
+    <div class="weekly-ad-price-row"><strong>Weekly Advertising — $20</strong><button class="small-btn ad-open-btn" type="button">Book</button></div>
     <div>Maximum 5 advertisers per week.</div>
   </div>
 
@@ -1292,7 +1421,7 @@
 
       <div class="weekly-ad-footer">
         <div class="weekly-ad-pricing">
-          <div><strong>Weekly Advertising — $20</strong></div>
+          <div class="weekly-ad-price-row"><strong>Weekly Advertising — $20</strong><button class="small-btn ad-open-btn" type="button">Book</button></div>
           <div>Maximum 5 advertisers per week.</div>
         </div>
 
@@ -1345,12 +1474,68 @@
 
       <div class="weekly-ad-footer">
         <div class="weekly-ad-pricing">
-          <div><strong>Weekly Advertising — $20</strong></div>
+          <div class="weekly-ad-price-row"><strong>Weekly Advertising — $20</strong><button class="small-btn ad-open-btn" type="button">Book</button></div>
           <div>Maximum 5 advertisers per week.</div>
         </div>
 
         <div class="weekly-ad-timer">1:00</div>
       </div>
+  </section>
+
+
+  <section id="advertisingScreen" class="screen log-screen">
+    <div class="log-top">
+      <button class="small-btn" id="advertisingBack">Back</button>
+    </div>
+
+    <div class="log-title-area ad-spots-head">
+      <h2>Advertising Spots</h2>
+      <div class="tip">Weekly Advertising — $20</div>
+      <div class="ad-spots-week" id="adSpotsWeek">Checking the next available week...</div>
+    </div>
+
+    <div class="ad-spots-list" id="adSpotsList">
+      <div class="ad-spot-row">
+        <div class="ad-spot-name">Checking spots...</div>
+        <div class="ad-spot-status taken">—</div>
+      </div>
+    </div>
+
+    <div class="ad-booking-panel">
+      <div class="ad-booking-kicker">Next available advertising week</div>
+      <div class="ad-booking-date">Checking availability...</div>
+      <div class="ad-booking-note">Maximum 5 advertisers per week. You will see the exact run dates before paying.</div>
+      <button class="ad-book-btn" type="button">Check booking — $20</button>
+      <div class="ad-booking-result"></div>
+    </div>
+
+    <div class="weekly-ad-label advertising-current-label">Advertisement for the week</div>
+
+    <div class="weekly-ad" aria-label="Advertisement for the week">
+      <div class="weekly-ad-slide">
+        <img src="./advertisements/Ransom-Grimus-Burgers.jpg" alt="Ransom Grimus Burgers advertisement">
+      </div>
+
+      <div class="weekly-ad-slide">
+        <img src="./advertisements/QAZVee83.jpg" alt="QAZ Vee 83 advertisement">
+      </div>
+
+      <div class="weekly-ad-slide">
+        <img src="./advertisements/QAZVee82.jpg" alt="QAZ Vee 82 advertisement">
+      </div>
+
+      <div class="weekly-ad-slide">
+        <img src="./advertisements/VHSRewind4.jpg" alt="VHS Rewind 4 advertisement">
+      </div>
+    </div>
+
+    <div class="weekly-ad-footer">
+      <div class="weekly-ad-pricing">
+        <div><strong>Weekly Advertising — $20</strong></div>
+        <div>Maximum 5 advertisers per week.</div>
+      </div>
+      <div class="weekly-ad-timer">1:00</div>
+    </div>
   </section>
 
   <div class="modal-backdrop" id="dateModal">
@@ -1398,6 +1583,22 @@
     const BAR_CAP = 150000;
     const MAX_ENTRIES = 365;
     const LOG_PAGE_SIZE = 73;
+
+    // Weekly advertising booking settings.
+    // The HTML is ready for a real global 5-slot queue and Apple purchase.
+    // To make it live, the native iPhone build must connect StoreKit and a
+    // backend must return the real paid/reserved count for each week.
+    const AD_PRICE_AUD = 20;
+    const AD_SLOTS_PER_WEEK = 5;
+    const AD_PRODUCT_ID = "simple_tax_au_weekly_advertising";
+    const AD_SUBMISSION_EMAIL = "YOUR-AD-EMAIL@example.com";
+
+    // Local TEST counts only. Use these while testing the booking dates.
+    // Example:
+    // "2026-09-07": 5,  // full
+    // "2026-09-14": 3   // 2 spots left
+    const AD_TEST_WEEKLY_COUNTS = {
+    };
 
     function taxRulesForYear(startYear) {
       if (startYear <= 2023) {
@@ -2098,10 +2299,26 @@
       updateUI();
     }
 
+    let advertisingReturnScreen = "main";
+
     function showScreen(name) {
       document.getElementById("mainScreen").style.display = name === "main" ? "block" : "none";
       document.getElementById("incomeScreen").style.display = name === "income" ? "block" : "none";
       document.getElementById("deductionScreen").style.display = name === "deduction" ? "block" : "none";
+      document.getElementById("advertisingScreen").style.display = name === "advertising" ? "block" : "none";
+    }
+
+    function currentVisibleScreenName() {
+      if (document.getElementById("incomeScreen").style.display === "block") return "income";
+      if (document.getElementById("deductionScreen").style.display === "block") return "deduction";
+      return "main";
+    }
+
+    async function openAdvertisingScreen() {
+      advertisingReturnScreen = currentVisibleScreenName();
+      showScreen("advertising");
+      window.scrollTo(0, 0);
+      await refreshAdBookingPanels();
     }
 
     function openDatePicker() {
@@ -2258,6 +2475,16 @@
 
     document.getElementById("incomeBack").addEventListener("click", () => showScreen("main"));
     document.getElementById("deductionBack").addEventListener("click", () => showScreen("main"));
+    document.getElementById("advertisingBack").addEventListener("click", () => {
+      showScreen(advertisingReturnScreen);
+      window.scrollTo(0, 0);
+    });
+
+    document.addEventListener("click", event => {
+      const openButton = event.target.closest(".ad-open-btn");
+      if (!openButton) return;
+      openAdvertisingScreen();
+    });
 
     document.getElementById("incomeUndoBtn").addEventListener("click", undoLastDelete);
     document.getElementById("deductionUndoBtn").addEventListener("click", undoLastDelete);
@@ -2321,6 +2548,268 @@
     loadCurrentFY();
     renderDateButton();
     updateUI();
+    refreshAdBookingPanels();
+
+
+    function adStartOfWeek(date = new Date()) {
+      const d = new Date(date);
+      d.setHours(0, 0, 0, 0);
+      const day = d.getDay();
+      const diff = day === 0 ? -6 : 1 - day;
+      d.setDate(d.getDate() + diff);
+      return d;
+    }
+
+    function adDateKey(date) {
+      const y = date.getFullYear();
+      const m = String(date.getMonth() + 1).padStart(2, "0");
+      const d = String(date.getDate()).padStart(2, "0");
+      return `${y}-${m}-${d}`;
+    }
+
+    function adWeekEnd(start) {
+      const end = new Date(start);
+      end.setDate(end.getDate() + 6);
+      return end;
+    }
+
+    function adFormatShortDate(date) {
+      return date.toLocaleDateString("en-AU", {
+        day: "numeric",
+        month: "short"
+      });
+    }
+
+    function adFormatWeek(start) {
+      const end = adWeekEnd(start);
+      return `${adFormatShortDate(start)} – ${adFormatShortDate(end)} ${end.getFullYear()}`;
+    }
+
+    function adLocalTestCount(weekStart) {
+      const key = adDateKey(weekStart);
+
+      if (Object.prototype.hasOwnProperty.call(AD_TEST_WEEKLY_COUNTS, key)) {
+        return Math.max(0, Number(AD_TEST_WEEKLY_COUNTS[key]) || 0);
+      }
+
+      return 0;
+    }
+
+    async function adFetchWeekCount(weekStart) {
+      // Replace this with the real backend call later.
+      // It must return the GLOBAL number of paid/reserved ads for this week.
+      return adLocalTestCount(weekStart);
+    }
+
+    async function adFindNextAvailableWeek() {
+      let weekStart = adStartOfWeek();
+
+      for (let i = 0; i < 53; i++) {
+        const booked = await adFetchWeekCount(weekStart);
+
+        if (booked < AD_SLOTS_PER_WEEK) {
+          return {
+            weekStart: new Date(weekStart),
+            weekEnd: adWeekEnd(weekStart),
+            booked,
+            remaining: AD_SLOTS_PER_WEEK - booked
+          };
+        }
+
+        weekStart = new Date(weekStart);
+        weekStart.setDate(weekStart.getDate() + 7);
+      }
+
+      return null;
+    }
+
+    function adSetPanelMessage(panel, html) {
+      const result = panel.querySelector(".ad-booking-result");
+      if (!result) return;
+      result.innerHTML = html;
+      result.style.display = "block";
+    }
+
+    function renderAdSpotRows(booking) {
+      const weekLabel = document.getElementById("adSpotsWeek");
+      const list = document.getElementById("adSpotsList");
+      if (!weekLabel || !list) return;
+
+      list.innerHTML = "";
+
+      if (!booking) {
+        weekLabel.textContent = "No advertising week is currently available.";
+        const row = document.createElement("div");
+        row.className = "ad-spot-row";
+        row.innerHTML = '<div class="ad-spot-name">No spots available</div><div class="ad-spot-status taken">Full</div>';
+        list.appendChild(row);
+        return;
+      }
+
+      const currentWeekKey = adDateKey(adStartOfWeek());
+      const bookingWeekKey = adDateKey(booking.weekStart);
+      const isCurrentWeek = currentWeekKey === bookingWeekKey;
+
+      weekLabel.textContent = isCurrentWeek
+        ? `${adFormatWeek(booking.weekStart)} — ${booking.remaining} of ${AD_SLOTS_PER_WEEK} spots available`
+        : `This week is full. Next available week: ${adFormatWeek(booking.weekStart)} — ${booking.remaining} of ${AD_SLOTS_PER_WEEK} spots available`;
+
+      for (let i = 1; i <= AD_SLOTS_PER_WEEK; i++) {
+        const taken = i <= booking.booked;
+        const row = document.createElement("div");
+        row.className = "ad-spot-row";
+
+        const name = document.createElement("div");
+        name.className = "ad-spot-name";
+        name.textContent = `Advertising Spot ${i}`;
+
+        const status = document.createElement("div");
+        status.className = `ad-spot-status ${taken ? "taken" : "available"}`;
+        status.textContent = taken ? "Taken" : "Available";
+
+        row.appendChild(name);
+        row.appendChild(status);
+        list.appendChild(row);
+      }
+    }
+
+    async function refreshAdBookingPanels() {
+      const panels = [...document.querySelectorAll(".ad-booking-panel")];
+      if (!panels.length) return;
+
+      panels.forEach(panel => {
+        const button = panel.querySelector(".ad-book-btn");
+        const date = panel.querySelector(".ad-booking-date");
+
+        if (button) {
+          button.disabled = true;
+          button.textContent = "Checking availability...";
+        }
+
+        if (date) {
+          date.textContent = "Checking availability...";
+        }
+      });
+
+      const booking = await adFindNextAvailableWeek();
+      renderAdSpotRows(booking);
+
+      panels.forEach(panel => {
+        const button = panel.querySelector(".ad-book-btn");
+        const date = panel.querySelector(".ad-booking-date");
+
+        if (!booking) {
+          if (date) date.textContent = "No advertising week currently available.";
+          if (button) {
+            button.disabled = true;
+            button.textContent = "Unavailable";
+          }
+          return;
+        }
+
+        const currentWeekKey = adDateKey(adStartOfWeek());
+        const bookingWeekKey = adDateKey(booking.weekStart);
+        const isCurrentWeek = bookingWeekKey === currentWeekKey;
+
+        if (date) {
+          date.textContent = isCurrentWeek
+            ? `${adFormatWeek(booking.weekStart)} — ${booking.remaining} of ${AD_SLOTS_PER_WEEK} spots left`
+            : `This week is full. Next opening: ${adFormatWeek(booking.weekStart)} — ${booking.remaining} of ${AD_SLOTS_PER_WEEK} spots left`;
+        }
+
+        if (button) {
+          button.disabled = false;
+          button.dataset.weekStart = bookingWeekKey;
+          button.textContent = isCurrentWeek
+            ? `Advertise this week — $${AD_PRICE_AUD}`
+            : `Book ${adFormatShortDate(booking.weekStart)}–${adFormatShortDate(booking.weekEnd)} — $${AD_PRICE_AUD}`;
+        }
+      });
+    }
+
+    async function beginAppleAdPurchase(panel) {
+      const booking = await adFindNextAvailableWeek();
+
+      if (!booking) {
+        adSetPanelMessage(panel, "No advertising week is currently available.");
+        return;
+      }
+
+      const payload = {
+        productId: AD_PRODUCT_ID,
+        priceAUD: AD_PRICE_AUD,
+        weekStart: adDateKey(booking.weekStart),
+        weekEnd: adDateKey(booking.weekEnd),
+        displayWeek: adFormatWeek(booking.weekStart)
+      };
+
+      // Native iPhone StoreKit bridge.
+      // The iOS wrapper should register a WKScriptMessageHandler named "adPurchase".
+      if (
+        window.webkit &&
+        window.webkit.messageHandlers &&
+        window.webkit.messageHandlers.adPurchase
+      ) {
+        window.webkit.messageHandlers.adPurchase.postMessage(payload);
+
+        adSetPanelMessage(
+          panel,
+          `Opening Apple purchase for <strong>${payload.displayWeek}</strong>...`
+        );
+        return;
+      }
+
+      // Never fake payment success in the browser/PWA version.
+      adSetPanelMessage(
+        panel,
+        `<strong>${payload.displayWeek}</strong><br>` +
+        `The booking screen is ready. Apple In-App Purchase still needs to be connected in the native iPhone build, and the real 5-slot count needs the shared booking backend.`
+      );
+    }
+
+    // Native iOS code calls this only AFTER Apple confirms the purchase and
+    // the backend has reserved the week/slot.
+    window.completeAdPurchase = function(result) {
+      const panels = [...document.querySelectorAll(".ad-booking-panel")];
+
+      if (!result || result.success !== true) {
+        panels.forEach(panel => {
+          adSetPanelMessage(panel, "The Apple purchase was not completed.");
+        });
+        return;
+      }
+
+      const displayWeek =
+        result.displayWeek ||
+        `${result.weekStart || ""} – ${result.weekEnd || ""}`.trim();
+
+      const bookingCode =
+        result.bookingCode || "Shown in your purchase confirmation";
+
+      panels.forEach(panel => {
+        adSetPanelMessage(
+          panel,
+          `<strong>Payment received.</strong><br>` +
+          `Your advertisement is scheduled for <strong>${displayWeek}</strong>.<br><br>` +
+          `Send your logo or JPEG to <strong>${AD_SUBMISSION_EMAIL}</strong>.<br>` +
+          `Include booking code: <strong>${bookingCode}</strong>.<br><br>` +
+          `Recommended image: 1500 × 1000 px, JPG or PNG. ` +
+          `Your advertisement will be reviewed before going live.`
+        );
+      });
+
+      refreshAdBookingPanels();
+    };
+
+    document.addEventListener("click", event => {
+      const button = event.target.closest(".ad-book-btn");
+      if (!button) return;
+
+      const panel = button.closest(".ad-booking-panel");
+      if (!panel) return;
+
+      beginAppleAdPurchase(panel);
+    });
 
     document.querySelectorAll(".weekly-ad").forEach((weeklyAd) => {
       const slides = Array.from(weeklyAd.querySelectorAll(".weekly-ad-slide"));
