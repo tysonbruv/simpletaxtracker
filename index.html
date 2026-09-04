@@ -267,7 +267,7 @@
       height: 14px;
       background: #2a2a2a;
       border-radius: 999px;
-      overflow: hidden;
+      overflow: visible;
     }
 
     .bar-fill {
@@ -276,6 +276,23 @@
       background: linear-gradient(90deg, #52c96b, var(--accent2), var(--accent));
       border-radius: 999px;
       transition: width .18s ease;
+    }
+
+    .bar-bracket-indicators {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .bar-bracket-indicator {
+      position: absolute;
+      top: -13px;
+      transform: translateX(-50%);
+      color: #8a8a8a;
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 1;
+      user-select: none;
     }
 
     .goal {
@@ -1160,7 +1177,10 @@
         <div id="rateLabel" class="rate"></div>
       </div>
       <div class="total" id="incomeDisplay">$0</div>
-      <div class="bar"><div class="bar-fill" id="barFill"></div></div>
+      <div class="bar">
+        <div class="bar-fill" id="barFill"></div>
+        <div class="bar-bracket-indicators" id="barBracketIndicators" aria-hidden="true"></div>
+      </div>
       <div class="goal">The goal is to bring this back to $18,200.</div>
     </section>
 
@@ -1715,6 +1735,42 @@
       return `${rateText(bracket.rate)} owing for each $1`;
     }
 
+    function renderBracketIndicators(income) {
+      const holder = document.getElementById("barBracketIndicators");
+      if (!holder) return;
+
+      holder.innerHTML = "";
+
+      // Company mode uses a flat selected rate, so there are no progressive
+      // bracket-section indicators.
+      if (taxMode === "company") return;
+
+      const x = taxableWholeDollars(income);
+      const rules = taxRulesForYear(currentFYStart);
+
+      // Skip the tax-free threshold and the first taxable bracket.
+      // Each remaining "from" value marks the next bracket boundary.
+      const boundaries = rules.brackets
+        .slice(2)
+        .map(bracket => bracket.from)
+        .filter(boundary => boundary > BASE && boundary < BAR_CAP);
+
+      boundaries.forEach(boundary => {
+        // Only show the tiny mark after the user has actually crossed
+        // into that bracket (e.g. $45,001 means x > 45,000).
+        if (x <= boundary) return;
+
+        const pct = ((boundary - BASE) / (BAR_CAP - BASE)) * 100;
+
+        const mark = document.createElement("span");
+        mark.className = "bar-bracket-indicator";
+        mark.textContent = "l";
+        mark.style.left = `${Math.max(0, Math.min(100, pct))}%`;
+
+        holder.appendChild(mark);
+      });
+    }
+
     function calcCurrentTax(income) {
       if (taxMode === "company") {
         const taxable = Math.max(roundCurrency(income), 0);
@@ -2011,6 +2067,7 @@
         document.getElementById("barFill").style.width = `${pct * 100}%`;
       }
 
+      renderBracketIndicators(net);
       renderPreviews();
       saveCurrentFY();
     }
